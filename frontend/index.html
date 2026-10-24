@@ -29,6 +29,49 @@ button:focus-visible,textarea:focus-visible{outline:2px solid var(--ai);outline-
 .hist li{padding:10px 12px;border-radius:10px;font-size:14px;color:#d0d0d0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
 .hist li:hover{background:#171717}
 .hist li.active{background:#212121;color:#fff}
+.hist li{display:flex;align-items:center;gap:6px}
+.hist li span{flex:1;overflow:hidden;text-overflow:ellipsis}
+.hist li .del{opacity:0;width:26px;height:26px;border-radius:6px;color:var(--mute);font-size:12px;transition:opacity .2s,background .2s,color .2s}
+.hist li:hover .del,.hist li .del:focus-visible{opacity:1}
+.hist li .del:hover{background:#2c2c2c;color:#ff8b8b}
+.hist-empty{padding:10px 12px;font-size:13px;color:var(--mute);line-height:1.5}
+.clear{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border-radius:10px;font-size:14px;color:#d0d0d0;transition:background .2s,color .2s,transform .2s}
+.clear:hover{background:#1c1c1c;color:#ff8b8b;transform:translateY(-1px)}
+.sidebar{position:relative}
+.av{overflow:hidden}.av img{width:100%;height:100%;object-fit:cover}
+.av.big{width:64px;height:64px;font-size:26px;background:var(--user)}
+.pmenu{position:absolute;left:10px;right:10px;bottom:70px;background:#2f2f2f;border:1px solid #444;border-radius:16px;padding:6px;box-shadow:0 12px 40px rgba(0,0,0,.55);opacity:0;transform:translateY(8px) scale(.97);transform-origin:bottom left;pointer-events:none;transition:opacity .18s,transform .18s;z-index:40}
+.pmenu.open{opacity:1;transform:none;pointer-events:auto}
+.pmail{padding:10px 12px;font-size:13px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pi{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:10px;font-size:14px;text-align:left;transition:background .15s}
+.pi:hover{background:#3d3d3d}
+.pi i{width:18px;text-align:center;color:#cfcfcf}
+.pi .chev{margin-left:auto;font-size:11px;transition:transform .2s}
+.pi.openc .chev{transform:rotate(90deg)}
+.psep{height:1px;background:#444;margin:6px 4px}
+.psub{display:none;padding-left:18px}.psub.open{display:block}
+.psub .pi{font-size:13.5px;padding:8px 12px}
+.profile{width:100%;border-radius:10px;text-align:left;transition:background .2s}
+.profile:hover{background:#1c1c1c}
+.profile>span:not(.av){flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;z-index:60;padding:16px;animation:fade .2s both}
+@keyframes fade{from{opacity:0}}
+.dlg{background:#2a2a2a;border:1px solid #444;border-radius:20px;width:min(440px,100%);max-height:90vh;overflow:auto;animation:rise .3s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 8px;font-size:17px}
+.x{width:32px;height:32px;border-radius:8px;transition:background .2s}.x:hover{background:#3a3a3a}
+.db{padding:8px 20px 20px;font-size:14.5px;line-height:1.6;color:#d6d6d6}
+.prow{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:#3a3a3a;font-size:14px;cursor:pointer;transition:background .2s,transform .2s}
+.btn:hover{background:#464646;transform:translateY(-1px)}
+.btn.ghost{background:none;color:var(--mute)}
+.btn.pri{background:var(--ai);color:#fff;width:100%;justify-content:center;margin-top:6px}
+.btn.pri:hover{background:#0e8f6f}
+.fl{display:block;margin-bottom:12px;font-size:13px;color:var(--mute)}
+.fl input,.fl select{display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid #444;background:#212121;color:var(--text);font:inherit;font-size:14.5px;outline:0;transition:border-color .2s,box-shadow .2s}
+.fl input:focus,.fl select:focus{border-color:var(--ai);box-shadow:0 0 0 3px rgba(16,163,127,.18)}
+.lopt{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;border-radius:12px;border:1px solid #444;margin-bottom:8px;transition:background .2s,border-color .2s}
+.lopt:hover{background:#333}.lopt.on{border-color:var(--ai)}.lopt i{color:var(--ai)}
+.tips{margin-left:20px}.tips li{margin:6px 0}
 .profile{display:flex;align-items:center;gap:10px;padding:12px;border-top:1px solid #1a1a1a;font-size:14px}
 .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#fff;flex-shrink:0}
 .av.u{background:var(--user)}
@@ -55,6 +98,11 @@ header small{color:var(--mute);font-weight:400;font-size:13px}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .msg .body{flex:1;min-width:0;font-size:15.5px;line-height:1.7;overflow-wrap:anywhere}
 .msg .who{font-weight:600;font-size:14px;margin-bottom:4px}
+.msg.user{flex-direction:row-reverse}
+.msg.user .content{flex:none;max-width:78%}
+.msg.user .who{display:none}
+.msg.user .body{background:#2f2f2f;padding:11px 18px;border-radius:22px 22px 6px 22px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.msg.ai .content{flex:1;min-width:0}
 .body p{margin:0 0 12px}.body p:last-child{margin-bottom:0}
 .body ul,.body ol{margin:0 0 12px 22px}.body li{margin:4px 0}.body li::marker{color:var(--mute)}
 .body strong{color:#fff;font-weight:600}
@@ -107,32 +155,41 @@ textarea::placeholder{color:#8e8e8e}
 <body>
 
 <aside class="sidebar" id="sidebar">
-  <button class="new-chat" id="newChat"><i class="fa-solid fa-pen-to-square"></i> New chat</button>
-  <div class="hist-label">Chat history</div>
-  <ul class="hist" id="hist">
-    <li class="active">Summarize my project report</li>
-    <li>Key clauses in the rental agreement</li>
-    <li>Research paper methodology</li>
-    <li>Invoice totals for Q3</li>
-    <li>Interview notes: action items</li>
-    <li>Compare two policy documents</li>
-  </ul>
-  <div class="profile"><div class="av u"><i class="fa-solid fa-user"></i></div> My workspace</div>
+  <button class="new-chat" id="newChat"><i class="fa-solid fa-pen-to-square"></i> <span data-i18n="newChat">New chat</span></button>
+  <div class="hist-label" data-i18n="hist">Chat history</div>
+  <ul class="hist" id="hist"></ul>
+  <button class="clear" id="clear"><i class="fa-solid fa-trash-can"></i> <span data-i18n="clear">Clear history</span></button>
+  <div class="pmenu" id="pmenu" role="menu">
+    <div class="pmail" id="pMail">Local profile</div>
+    <button class="pi" data-act="settings"><i class="fa-solid fa-gear"></i><span data-i18n="settings">Settings</span></button>
+    <button class="pi" data-act="language"><i class="fa-solid fa-globe"></i><span data-i18n="language">Language</span></button>
+    <button class="pi" data-act="help"><i class="fa-regular fa-circle-question"></i><span data-i18n="help">Get help</span></button>
+    <div class="psep"></div>
+    <button class="pi" data-act="learn"><i class="fa-solid fa-circle-info"></i><span data-i18n="learn">Learn more</span><i class="fa-solid fa-chevron-right chev"></i></button>
+    <div class="psub" id="psub">
+      <button class="pi" data-act="about">About DocuMind</button>
+      <button class="pi" data-act="shortcuts">Keyboard shortcuts</button>
+      <button class="pi" data-act="privacy">Privacy</button>
+    </div>
+    <div class="psep"></div>
+    <button class="pi" data-act="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="logout">Log out</span></button>
+  </div>
+  <button class="profile" id="pBtn" aria-haspopup="menu" aria-expanded="false"><span class="av u"></span><span id="pName">My workspace</span><i class="fa-solid fa-ellipsis"></i></button>
 </aside>
 <div class="scrim" id="scrim"></div>
 
 <main>
   <header>
     <button class="menu" id="menu" aria-label="Open sidebar"><i class="fa-solid fa-bars"></i></button>
-    DocuMind <small>Document Q&amp;A</small>
+    DocuMind <small data-i18n="sub">Document Q&amp;A</small>
   </header>
 
   <div id="chat">
     <div class="wrap" id="thread">
       <div class="empty" id="empty">
         <div class="av a"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-        <h1>What would you like to know?</h1>
-        <p>Ask a question about your documents and get an answer in seconds.</p>
+        <h1 data-i18n="title">What would you like to know?</h1>
+        <p data-i18n="lead">Ask a question about your documents and get an answer in seconds.</p>
         <div class="chips">
           <button class="chip">Summarize the main points</button>
           <button class="chip">What are the key deadlines?</button>
@@ -144,10 +201,10 @@ textarea::placeholder{color:#8e8e8e}
 
   <div class="composer">
     <div class="box">
-      <textarea id="input" rows="1" placeholder="Ask anything about your documents"></textarea>
+      <textarea id="input" rows="1" placeholder="Ask anything about your documents" data-i18n-ph="ph" dir="auto"></textarea>
       <button id="send" disabled aria-label="Send message"><i class="fa-solid fa-arrow-up"></i></button>
     </div>
-    <div class="foot">DocuMind can make mistakes. Check important information.</div>
+    <div class="foot" data-i18n="foot">DocuMind can make mistakes. Check important information.</div>
   </div>
 </main>
 
@@ -156,6 +213,10 @@ const API_URL = 'https://documind-api-live.onrender.com/ask';
 const $ = s => document.querySelector(s);
 const chat = $('#chat'), thread = $('#thread'), input = $('#input'), sendBtn = $('#send');
 let busy = false, ctrl = null, timer = null, stopFn = null;
+const EMPTY = thread.innerHTML, KEY = 'documind_chats_v1';
+let chats = [], cur = null;
+try { chats = JSON.parse(localStorage.getItem(KEY)) || []; } catch { chats = []; }
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(chats)); } catch {} };
 
 /* ---------- helpers ---------- */
 const render = t => DOMPurify.sanitize(marked.parse(t, { breaks: true }));
@@ -177,13 +238,14 @@ function resize() {
   if (!busy) sendBtn.disabled = !input.value.trim();
 }
 
-function addMsg(role, html) {
+function addMsg(role, html, instant) {
   $('#empty')?.remove();
   const el = document.createElement('div');
   el.className = 'msg ' + role;
+  if (instant) el.style.animation = 'none';
   const ai = role === 'ai';
-  el.innerHTML = `<div class="av ${ai ? 'a' : 'u'}"><i class="fa-solid ${ai ? 'fa-wand-magic-sparkles' : 'fa-user'}"></i></div>
-    <div class="content" style="flex:1;min-width:0"><div class="who">${ai ? 'DocuMind' : 'You'}</div><div class="body">${html}</div>
+  el.innerHTML = `<div class="av ${ai ? 'a' : 'u'}">${ai ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : avInner()}</div>
+    <div class="content"><div class="who">${ai ? 'DocuMind' : 'You'}</div><div class="body" dir="auto">${html}</div>
     ${ai ? `<div class="actions hide"><button class="act copy"><i class="fa-regular fa-copy"></i> Copy</button><button class="act regen"><i class="fa-solid fa-rotate-right"></i> Regenerate</button></div>` : ''}</div>`;
   thread.appendChild(el);
   toBottom();
@@ -209,6 +271,7 @@ function typewrite(el, text, done) {
     clearInterval(timer); timer = null; stopFn = null;
     body.innerHTML = render(shown);
     el.dataset.text = shown;
+    if (el._m) { el._m.text = shown; persist(); }
     el.querySelector('.actions').classList.remove('hide');
     setBusy(false);
     done && done();
@@ -218,7 +281,7 @@ function typewrite(el, text, done) {
     i = Math.min(text.length, i + step);
     paint();
     if (i >= text.length) finish(text);
-  }, 14);
+  }, SPEEDS[prefs.speed] || 14);
 }
 
 /* ---------- API ---------- */
@@ -259,6 +322,7 @@ async function ask(question, aiEl) {
     clearTimeout(slow);
     aiEl.dataset.q = question;
     aiEl.dataset.text = '';
+    if (aiEl._m) { aiEl._m.text = ''; persist(); }
     const stopped = e.name === 'AbortError';
     body.classList.toggle('err', !stopped);
     body.innerHTML = stopped ? '<em style="color:var(--mute)">Generation stopped.</em>'
@@ -274,7 +338,11 @@ function submit(q) {
   if (!q || busy) return;
   addMsg('user', esc(q).replace(/\n/g, '<br>'));
   input.value = ''; resize();
-  const ai = addMsg('ai', '');
+  if (!cur) { cur = { id: Date.now(), title: q.slice(0, 40), msgs: [] }; chats.unshift(cur); }
+  const m = { role: 'ai', text: '', q };
+  cur.msgs.push({ role: 'user', text: q }, m);
+  const ai = addMsg('ai', ''); ai._m = m;
+  persist(); renderHist();
   ask(q, ai);
 }
 
@@ -301,21 +369,152 @@ thread.addEventListener('click', e => {
   }
 });
 
-$('#newChat').onclick = () => {
+function renderHist() {
+  $('#hist').innerHTML = chats.length
+    ? chats.map(c => `<li data-id="${c.id}" class="${cur && cur.id === c.id ? 'active' : ''}"><span>${esc(c.title)}</span><button class="del" aria-label="Delete chat"><i class="fa-solid fa-xmark"></i></button></li>`).join('')
+    : `<div class="hist-empty">${t('noChats')}</div>`;
+  $('#clear').style.display = chats.length ? '' : 'none';
+}
+function closeSide() { $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('show'); }
+function newChat() {
   if (stopFn) stopFn();
-  thread.innerHTML = `<div class="empty" id="empty"><div class="av a"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-    <h1>What would you like to know?</h1><p>Ask a question about your documents and get an answer in seconds.</p></div>`;
-  $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('show');
-  input.focus();
-};
+  cur = null; thread.innerHTML = EMPTY;
+  applyLang(); closeSide(); input.focus();
+}
+function loadChat(id) {
+  if (stopFn) stopFn();
+  cur = chats.find(c => c.id === id); if (!cur) return;
+  thread.innerHTML = '';
+  cur.msgs.forEach(m => {
+    if (m.role === 'user') return addMsg('user', esc(m.text).replace(/\n/g, '<br>'), true);
+    const el = addMsg('ai', '', true);
+    el._m = m; el.dataset.q = m.q; el.dataset.text = m.text;
+    el.querySelector('.body').innerHTML = m.text ? render(m.text) : '<em style="color:var(--mute)">No answer was saved. Use Regenerate to ask again.</em>';
+    el.querySelector('.actions').classList.remove('hide');
+    if (!m.text) el.querySelector('.copy').style.display = 'none';
+  });
+  renderHist(); closeSide(); toBottom();
+}
+$('#newChat').onclick = newChat;
 $('#hist').addEventListener('click', e => {
   const li = e.target.closest('li'); if (!li) return;
-  document.querySelectorAll('#hist li').forEach(x => x.classList.remove('active'));
-  li.classList.add('active');
+  const id = +li.dataset.id;
+  if (e.target.closest('.del')) {
+    chats = chats.filter(c => c.id !== id); persist();
+    return cur && cur.id === id ? newChat() : renderHist();
+  }
+  loadChat(id);
 });
+$('#clear').onclick = () => {
+  if (!chats.length || !confirm('Delete all saved chats? This cannot be undone.')) return;
+  chats = []; persist(); newChat();
+};
 const toggle = open => { $('#sidebar').classList.toggle('open', open); $('#scrim').classList.toggle('show', open); };
 $('#menu').onclick = () => toggle(true);
 $('#scrim').onclick = () => toggle(false);
+/* ---------- profile, settings, language ---------- */
+const PKEY = 'documind_prefs_v1';
+let prefs = { name: 'My workspace', email: '', photo: '', lang: 'en', speed: 'normal' };
+try { Object.assign(prefs, JSON.parse(localStorage.getItem(PKEY)) || {}); } catch {}
+const savePrefs = () => { try { localStorage.setItem(PKEY, JSON.stringify(prefs)); } catch {} };
+const SPEEDS = { fast: 5, normal: 14, slow: 30 };
+const LANGS = [['en', 'English'], ['ru', 'Roman Urdu'], ['ur', 'اردو']];
+const T = {
+  en: { newChat: 'New chat', hist: 'Chat history', clear: 'Clear history', sub: 'Document Q&A', title: 'What would you like to know?', lead: 'Ask a question about your documents and get an answer in seconds.', ph: 'Ask anything about your documents', foot: 'DocuMind can make mistakes. Check important information.', settings: 'Settings', language: 'Language', help: 'Get help', learn: 'Learn more', logout: 'Log out', noChats: 'No chats yet. Your conversations will appear here.' },
+  ru: { newChat: 'Nayi chat', hist: 'Chat history', clear: 'History saaf karein', sub: 'Document sawal-jawab', title: 'Aap kya jaanna chahte hain?', lead: 'Apne documents ke baare mein sawal poochhein aur chand seconds mein jawab payein.', ph: 'Apne documents ke baare mein kuch bhi poochhein', foot: 'DocuMind se ghalti ho sakti hai. Zaroori maloomat dobara check karein.', settings: 'Settings', language: 'Zuban', help: 'Madad', learn: 'Mazeed jaanein', logout: 'Log out', noChats: 'Abhi koi chat nahi. Aap ki guftagu yahan nazar aayegi.' },
+  ur: { newChat: 'نئی چیٹ', hist: 'چیٹ ہسٹری', clear: 'ہسٹری صاف کریں', sub: 'ڈاکیومنٹ سوال و جواب', title: 'آپ کیا جاننا چاہتے ہیں؟', lead: 'اپنے ڈاکیومنٹس کے بارے میں سوال پوچھیں اور چند سیکنڈ میں جواب پائیں۔', ph: 'اپنے ڈاکیومنٹس کے بارے میں کچھ بھی پوچھیں', foot: 'DocuMind سے غلطی ہو سکتی ہے۔ اہم معلومات کی تصدیق کریں۔', settings: 'سیٹنگز', language: 'زبان', help: 'مدد حاصل کریں', learn: 'مزید جانیں', logout: 'لاگ آؤٹ', noChats: 'ابھی کوئی چیٹ نہیں۔ آپ کی گفتگو یہاں نظر آئے گی۔' }
+};
+const t = k => (T[prefs.lang] || T.en)[k] ?? T.en[k];
+const avInner = () => prefs.photo ? `<img src="${prefs.photo}" alt="">` : '<i class="fa-solid fa-user"></i>';
+
+function applyLang() {
+  document.documentElement.lang = prefs.lang === 'ur' ? 'ur' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(e => e.textContent = t(e.dataset.i18n));
+  document.querySelectorAll('[data-i18n-ph]').forEach(e => e.placeholder = t(e.dataset.i18nPh));
+  renderHist();
+}
+function applyProfile() {
+  document.querySelectorAll('.av.u').forEach(a => a.innerHTML = avInner());
+  $('#pName').textContent = prefs.name || 'My workspace';
+  $('#pMail').textContent = prefs.email || 'Local profile';
+}
+
+function closeModal() { $('#modal')?.remove(); }
+function modal(title, html, onMount) {
+  closeModal();
+  const m = document.createElement('div');
+  m.className = 'modal'; m.id = 'modal';
+  m.innerHTML = `<div class="dlg" role="dialog" aria-modal="true"><div class="dh"><b>${title}</b><button class="x" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div><div class="db">${html}</div></div>`;
+  m.addEventListener('click', e => { if (e.target === m || e.target.closest('.x')) closeModal(); });
+  document.body.appendChild(m);
+  onMount && onMount(m);
+}
+function readPhoto(file, cb) {
+  const r = new FileReader();
+  r.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas'), n = 160; c.width = c.height = n;
+      const k = Math.max(n / img.width, n / img.height), w = img.width * k, h = img.height * k;
+      c.getContext('2d').drawImage(img, (n - w) / 2, (n - h) / 2, w, h);
+      cb(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = r.result;
+  };
+  r.readAsDataURL(file);
+}
+
+function openSettings() {
+  let pending = prefs.photo;
+  modal(t('settings'), `
+    <div class="prow"><span class="av big" id="sPrev"></span>
+      <div><label class="btn" for="sFile"><i class="fa-solid fa-camera"></i> Upload photo</label><input type="file" id="sFile" accept="image/*" hidden>
+      <button class="btn ghost" id="sRm" type="button">Remove</button></div></div>
+    <label class="fl">Name<input id="sName" maxlength="30"></label>
+    <label class="fl">Email (optional)<input id="sMail" type="email" maxlength="60"></label>
+    <label class="fl">Typing speed<select id="sSpeed"><option value="fast">Fast</option><option value="normal">Normal</option><option value="slow">Slow</option></select></label>
+    <button class="btn pri" id="sSave" type="button">Save changes</button>`, m => {
+    const q = s => m.querySelector(s);
+    const paint = () => q('#sPrev').innerHTML = pending ? `<img src="${pending}" alt="">` : '<i class="fa-solid fa-user"></i>';
+    q('#sName').value = prefs.name; q('#sMail').value = prefs.email; q('#sSpeed').value = prefs.speed; paint();
+    q('#sFile').onchange = e => { const f = e.target.files[0]; if (f) readPhoto(f, d => { pending = d; paint(); }); };
+    q('#sRm').onclick = () => { pending = ''; paint(); };
+    q('#sSave').onclick = () => {
+      Object.assign(prefs, { name: q('#sName').value.trim() || 'My workspace', email: q('#sMail').value.trim(), speed: q('#sSpeed').value, photo: pending });
+      savePrefs(); applyProfile(); closeModal();
+    };
+  });
+}
+function openLang() {
+  modal(t('language'), LANGS.map(([k, n]) => `<button class="lopt ${prefs.lang === k ? 'on' : ''}" data-l="${k}"><span dir="auto">${n}</span>${prefs.lang === k ? '<i class="fa-solid fa-check"></i>' : ''}</button>`).join(''),
+    m => m.querySelectorAll('.lopt').forEach(b => b.onclick = () => { prefs.lang = b.dataset.l; savePrefs(); applyLang(); closeModal(); }));
+}
+const INFO = {
+  help: ['Get help', '<ul class="tips"><li>Type a question about your document and press Enter.</li><li>Shift + Enter adds a new line.</li><li>Press the square button to stop a reply.</li><li>Hover over a reply to copy it or regenerate it.</li><li>Your chats are saved in this browser only.</li></ul>'],
+  about: ['About DocuMind', '<p>DocuMind answers questions about your documents. Ask in plain language and get a written answer you can copy or regenerate.</p>'],
+  shortcuts: ['Keyboard shortcuts', '<ul class="tips"><li><b>Enter</b>: send message</li><li><b>Shift + Enter</b>: new line</li><li><b>Esc</b>: close menus and dialogs</li></ul>'],
+  privacy: ['Privacy', '<p>Your chats, name and photo are stored only in this browser. Your questions are sent to the DocuMind server to get an answer.</p>']
+};
+
+const pm = $('#pmenu'), pb = $('#pBtn');
+const setMenu = o => { pm.classList.toggle('open', o); pb.setAttribute('aria-expanded', o); if (!o) { $('#psub').classList.remove('open'); pm.querySelector('[data-act=learn]').classList.remove('openc'); } };
+pb.onclick = e => { e.stopPropagation(); setMenu(!pm.classList.contains('open')); };
+document.addEventListener('click', e => { if (!pm.contains(e.target) && !pb.contains(e.target)) setMenu(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); setMenu(false); } });
+pm.addEventListener('click', e => {
+  const b = e.target.closest('.pi'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'learn') { $('#psub').classList.toggle('open'); b.classList.toggle('openc'); return; }
+  setMenu(false); closeSide();
+  if (a === 'settings') openSettings();
+  else if (a === 'language') openLang();
+  else if (INFO[a]) modal(...INFO[a]);
+  else if (a === 'logout' && confirm('Reset your name and photo on this browser?')) {
+    Object.assign(prefs, { name: 'My workspace', email: '', photo: '' }); savePrefs(); applyProfile();
+  }
+});
+applyLang();
+applyProfile();
 </script>
 </body>
 </html>
