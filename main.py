@@ -1,15 +1,16 @@
 import os
-import re
+import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from groq import Groq
 from pypdf import PdfReader
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from sentence_transformers import SentenceTransformer
 
 load_dotenv()
 
-app = FastAPI(title="DocuMind AI API")
+app = FastAPI(title="DocuMind AI - Multi-Book API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,62 +23,71 @@ class QuestionRequest(BaseModel):
     question: str
 
 chunks = []
+embeddings = []
+model = None
 llm_client = None
-full_text_global = ""
 
 @app.on_event("startup")
 def startup_event():
-    global chunks, llm_client, full_text_global
-    print("Startup: PDF process ho rahi hai...")
-    try:
-        reader = PdfReader("data.pdf")
-        full_text_global = "".join([page.extract_text() + "\n" for page in reader.pages if page.extract_text()])
+    global chunks, embeddings, model, llm_client
+    
+    print("Startup: Model load ho raha hai...")
+    # Hugging Face ka chota model (Render ke 512MB mein fit ho jata hai)
+    model = SentenceTransformer('BAAI/bge-small-en-v1.5')
+    
+    print("Books folder se PDFs parhi ja rahi hain...")
+    full_text = ""
+    books_folder = "books"
+    
+    if os.path.exists(books_folder):
+        for filename in os.listdir(books_folder):
+            if filename.endswith(".pdf"):
+                print(f"Parh rahe hain: {filename}")
+                reader = PdfReader(os.path.join(books_folder, filename))
+                full_text += "".join([page.extract_text() + "\n" for page in reader.pages if page.extract_text()])
+    else:
+        print("Error: 'books' folder nahi mila!")
+    
+    if full_text.strip():
+        # Chunking (1500 characters per chunk)
+        chunk_size = 1500 
+        chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
+        print(f"Total {len(chunks)} chunks banaye gaye.")
         
-        chunk_size = 1000 
-        chunks = [full_text_global[i:i+chunk_size] for i in range(0, len(full_text_global), chunk_size)]
+        print("Embeddings ban rahe hain (thora waqt lagega)...")
+        embeddings = model.encode(chunks, show_progress_bar=False)
         
         llm_client = Groq()
-        print(f"System tayyar hai! {len(chunks)} chunks load ho chuke hain. 🚀")
-    except Exception as e:
-        print(f"Startup Error: {e}")
+        print("System tayyar hai! 🚀")
+    else:
+        print("Koi text nahi mila books mein.")
 
 @app.get("/")
 def read_root():
-    return {"status": "healthy"}
+    return {"status": "healthy", "chunks_loaded": len(chunks)}
 
 @app.post("/ask")
 def ask_question(request: QuestionRequest):
-    if not chunks or not llm_client:
+    if not chunks or not llm_client or not model:
         raise HTTPException(status_code=500, detail="System abhi tayyar nahi hai.")
     
     try:
-        q = request.question.lower()
+        # 1. Sawal ka embedding banao
+        query_embedding = model.encode([request.question])[0]
         
-        # Smart Search: Agar sawal Importance ke baare mein hai
-        if "importance" in q or "advantage" in q:
-            match = re.search(r"1\.3\s+IMPORTANCE OF COMMUNICATION", full_text_global, re.IGNORECASE)
-            if match:
-                start = match.start()
-                context = full_text_global[start:start+2500] # Us heading ke baad ka text
-            else:
-                context = "\n\n".join(chunks[:30])
-                
-        # Agar sawal Purpose ke baare mein hai
-        elif "purpose" in q:
-            match = re.search(r"1\.4\s+PURPOSE OF COMMUNICATION", full_text_global, re.IGNORECASE)
-            if match:
-                start = match.start()
-                context = full_text_global[start:start+2500]
-            else:
-                context = "\n\n".join(chunks[:30])
+        # 2. Similarity check karo
+        scores = np.dot(embeddings, query_embedding) / (
+            np.linalg.norm(embeddings, axis=1) * np.linalg.norm(query_embedding) + 1e-8
+        )
         
-        # Default: Agar koi specific heading nahi mili, toh pehle 20 chunks de do
-        else:
-            context = "\n\n".join(chunks[:20])
-
+        # 3. Top 7 sab se relevant chunks dhoondo
+        top_indices = np.argsort(scores)[-7:][::-1]
+        context = "\n\n".join([chunks[i] for i in top_indices])
+        
+        # 4. AI se jawab
         system_prompt = (
-            "You are a helpful assistant. Read the provided context carefully and answer the user's question. "
-            "Respond in clear English."
+            "You are a helpful assistant. Answer the question based ONLY on the provided context. "
+            "If the answer is not in the context, say 'I don't know'. Respond in English."
         )
         
         response = llm_client.chat.completions.create(
