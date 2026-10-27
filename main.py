@@ -1,12 +1,12 @@
 import os
-import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from groq import Groq
 from pypdf import PdfReader
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
-from sentence_transformers import SentenceTransformer
+from fastembed_cloud import CloudTextEmbedding
+import numpy as np
 
 load_dotenv()
 
@@ -31,11 +31,7 @@ llm_client = None
 def startup_event():
     global chunks, embeddings, model, llm_client
     
-    print("Startup: Model load ho raha hai...")
-    # Hugging Face ka chota model (Render ke 512MB mein fit ho jata hai)
-    model = SentenceTransformer('BAAI/bge-small-en-v1.5')
-    
-    print("Books folder se PDFs parhi ja rahi hain...")
+    print("Startup: Books folder se PDFs parhi ja rahi hain...")
     full_text = ""
     books_folder = "books"
     
@@ -49,13 +45,14 @@ def startup_event():
         print("Error: 'books' folder nahi mila!")
     
     if full_text.strip():
-        # Chunking (1500 characters per chunk)
         chunk_size = 1500 
         chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
         print(f"Total {len(chunks)} chunks banaye gaye.")
         
-        print("Embeddings ban rahe hain (thora waqt lagega)...")
-        embeddings = model.encode(chunks, show_progress_bar=False)
+        print("Cloud embeddings ban rahe hain (bilkul free)...")
+        # fastembed-cloud bilkul free hai aur memory nahi khati
+        model = CloudTextEmbedding()
+        embeddings = model.embed(chunks)
         
         llm_client = Groq()
         print("System tayyar hai! 🚀")
@@ -72,19 +69,15 @@ def ask_question(request: QuestionRequest):
         raise HTTPException(status_code=500, detail="System abhi tayyar nahi hai.")
     
     try:
-        # 1. Sawal ka embedding banao
-        query_embedding = model.encode([request.question])[0]
+        query_embedding = model.query_embed(request.question)
         
-        # 2. Similarity check karo
         scores = np.dot(embeddings, query_embedding) / (
             np.linalg.norm(embeddings, axis=1) * np.linalg.norm(query_embedding) + 1e-8
         )
         
-        # 3. Top 7 sab se relevant chunks dhoondo
         top_indices = np.argsort(scores)[-7:][::-1]
         context = "\n\n".join([chunks[i] for i in top_indices])
         
-        # 4. AI se jawab
         system_prompt = (
             "You are a helpful assistant. Answer the question based ONLY on the provided context. "
             "If the answer is not in the context, say 'I don't know'. Respond in English."

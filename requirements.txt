@@ -4,4 +4,5 @@ groq
 pypdf
 python-multipart
 python-dotenv
-sentence-transformers
+fastembed-cloud
+numpy
