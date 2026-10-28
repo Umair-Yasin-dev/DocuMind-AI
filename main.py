@@ -46,7 +46,7 @@ def load_books():
                     full_text += "".join([page.extract_text() + "\n" for page in reader.pages if page.extract_text()])
         
         if full_text.strip():
-            chunk_size = 1500 
+            chunk_size = 2000 
             chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
             print(f"Total {len(chunks)} chunks banaye gaye.")
             
